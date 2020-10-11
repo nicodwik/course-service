@@ -8,6 +8,19 @@ use App\Chapter;
 
 class ChapterController extends Controller
 {
+    public function index(Request $request) {
+        $chapter = Chapter::query();
+
+        if ($course_id = $request->query('course_id')) {
+            $chapter->where('course_id', '=', $course_id);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $chapter->get()
+        ]);
+    }
+
     public function create(Request $request) {
         $rules = [
             'name' => 'required|string',
