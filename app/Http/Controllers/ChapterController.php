@@ -18,7 +18,7 @@ class ChapterController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $chapter->get()
-        ]);
+        ], 200);
     }
 
     public function create(Request $request) {
@@ -47,6 +47,22 @@ class ChapterController extends Controller
         }
 
         $chapter = Chapter::create($data);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $chapter
+        ], 200);
+    }
+
+    public function show($id) {
+        
+        $chapter = Chapter::find($id);
+        if (!$chapter) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'chapter not found'
+            ]);
+        }
 
         return response()->json([
             'status' => 'success',
@@ -90,6 +106,23 @@ class ChapterController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $chapter
+        ], 200);
+    }
+
+    public function destroy($id) {
+        
+        $chapter = Chapter::find($id);
+        if (!$chapter) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'chapter not found'
+            ], 404);
+        }
+        $chapter->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'chapter '. $chapter->name .' successfully deleted'
         ], 200);
     }
 }
