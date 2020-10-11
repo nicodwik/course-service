@@ -17,14 +17,14 @@ class ChapterController extends Controller
         $validate = \Validator::make($data, $rules);
 
         if ($validate->fails()) {
-            return->response()->json([
+            return response()->json([
                 'status' => 'error',
                 'message' => $validate->errors()
             ], 400);
         }
 
         $courseId = \Request('course_id');
-        $course = Course::find($id);
+        $course = Course::find($courseId);
 
         if (!$course) {
             return response()->json([
