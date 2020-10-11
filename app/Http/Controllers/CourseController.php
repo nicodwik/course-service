@@ -8,6 +8,15 @@ use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
+    public function index() {
+        $course = Course::paginate(5);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $course
+        ]);
+    }
+
     public function create(Request $request) {
         $rules = [
             'name' => 'required|string',
