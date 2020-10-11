@@ -7,6 +7,31 @@ use App\Mentor;
 
 class MentorController extends Controller
 {
+    public function index() {
+        $mentors = Mentor::all();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $mentors
+        ], 200);
+    }
+
+    public function show($id) {
+        $mentor = Mentor::find($id);
+
+        if(!$mentor) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'mentor not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $mentor
+        ], 200); 
+    }
+
     public function create(Request $request) {
         $rules = [
             'name' => 'required|string',
