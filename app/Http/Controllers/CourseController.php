@@ -8,12 +8,28 @@ use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
-    public function index() {
-        $course = Course::paginate(5);
+    public function index(Request $request) {
+        $course = Course::query();
 
+        if ($search = $request->query('search')) {
+            // $course->when($search, function($query) use ($search) {
+            //     return $query->whereRaw("name LIKE '%". strtolower($search). "%' ");
+            // });
+            
+            $course->whereRaw("name LIKE '%". strtolower($search) ."%'");
+        }
+        
+        if ($status = $request->query('status')) {
+            // $course->when($status, function($query) use ($status) {
+            //     return $query->where('status', '=', $status);
+            // });
+    
+            $course->where('status', '=', $status);
+        }
+        
         return response()->json([
             'status' => 'success',
-            'data' => $course
+            'data' => $course->paginate(5)
         ]);
     }
 
