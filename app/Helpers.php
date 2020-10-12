@@ -16,33 +16,31 @@ function getUser($userId) {
             'status' => 'error',
             'http_code' => 500,
             'message' => 'service user unavailable'
-            ]);
-        }
+        ]);
     }
+}
 
 function getUserByIds($userIds = []) {
     $url = env('USER_SERVICE_URL'). 'users/';
     
     try {
-
-        if (count($userIds) == 0) {
+        if (count($userIds) === 0) {
             return response()->json([
                 'status' => 'success',
                 'http_code' => 200,
                 'data' => []
-                ]);
-            }
+            ]);
         }
-        $response = Http::timeout(10)->get($url, ['userIds[]' => $userIds]);
-        $data =>$response->json();
-        $data['http_code'] = > $response->getStatusCode();
+        
+        $response = Http::timeout(10)->get($url, ['user_ids[]' => $userIds]);
+        $data = $response->json();
+        $data['http_code'] = $response->getStatusCode();
         return $data;
     } catch (\Throwable $th) {
         return response()->json([
             'status' => 'error',
             'http_code' => 500,
             'message' => 'service user unavailable'
-            ]);
-        }
-    }
+        ]);
+    };
 }
