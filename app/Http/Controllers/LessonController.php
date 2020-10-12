@@ -41,4 +41,44 @@ class LessonController extends Controller
             'data' => $lesson
         ], 200);
     }
+
+    public function update(Request $request, $id) {
+        $rules = [
+            'name' => 'required|string',
+            'video' => 'required|string',
+            'chapter_id' => 'required|integer'
+        ];
+        $data = $request->all();
+        $validate = \Validator::make($data, $rules);
+        if ($validate->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $validate->errors()
+            ], 400);
+        }
+
+        $lesson = Lesson::find($id);
+        if (!$lesson) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'lesson not found'
+            ], 404);
+        }
+
+        $chapterId = \Request('chapter_id');
+        $chapter = Chapter::find($chapterId);
+        if (!$chapter) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'chapter not found'
+            ], 404);
+        }
+
+        $lesson->update($data);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $lesson
+        ], 200);
+    }
 }
