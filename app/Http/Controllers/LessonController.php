@@ -9,6 +9,36 @@ use Illuminate\Http\Request;
 
 class LessonController extends Controller
 {
+
+    public function index(Request $request) {
+        $lessons = Lesson::query();
+
+        if ($chapter_id = $request->query('chapter_id')) {
+            $lessons->where('chapter_id', '=', $chapter_id);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $lessons->get()
+        ], 200);
+    }
+
+    public function show($id) {
+        
+        $lesson = Lesson::find($id);
+        if (!$lesson) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'lesson not found'
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $lesson
+        ], 200);
+    }
+
     public function create(Request $request) {
         $rules = [
             'name' => 'required|string',
@@ -81,4 +111,5 @@ class LessonController extends Controller
             'data' => $lesson
         ], 200);
     }
+
 }
