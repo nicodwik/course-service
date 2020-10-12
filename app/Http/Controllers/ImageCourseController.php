@@ -39,4 +39,21 @@ class ImageCourseController extends Controller
             'data' => $image
         ], 200);
     }
+
+    public function destroy($id) {
+        
+        $image = ImageCourse::find($id);
+        if (!$image) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'image not found'
+            ], 404);
+        }
+        $image->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'image successfully deleted'
+        ], 200);
+    }
 }
