@@ -15,7 +15,7 @@ class CreateImageCoursesTable extends Migration
     {
         Schema::create('image_courses', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('image');
             $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
             $table->timestamps();
         });
