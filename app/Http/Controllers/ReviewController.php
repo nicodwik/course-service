@@ -47,7 +47,7 @@ class ReviewController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'this course has been reviewed'
-            ]);
+            ], 409);
         }
 
 
@@ -56,5 +56,35 @@ class ReviewController extends Controller
             'status' => 'success',
             'data' => $review
         ], 200);
+    }
+
+    public function update(Request $request, $id) {
+        $rules = [
+            'rating' => 'required|integer|min:1|max:5',
+            'note' => 'string'
+        ];
+        $data = $request->except('user_id', 'course_id');
+        $validation = \Validator::make($data, $rules);
+
+        if ($validation->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $validation->errors()
+            ], 400);
+        }
+
+        $review = Review::find($id);
+        if (!$review) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'review not found'
+            ], 404);
+        }
+
+        $review->update($data);
+        return response()->json([
+            'status' => 'success',
+            'data' => $review
+        ]);
     }
 }

@@ -47,3 +47,4 @@ Route::get('my-courses', 'MyCourseController@index');
 Route::post('my-courses', 'MyCourseController@create');
 
 Route::post('reviews', 'ReviewController@create');
+Route::put('reviews/{id}', 'ReviewController@update');
