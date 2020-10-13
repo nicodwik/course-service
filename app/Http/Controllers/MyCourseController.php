@@ -8,6 +8,19 @@ use Illuminate\Http\Request;
 
 class MyCourseController extends Controller
 {
+    public function index(Request $request) {
+        $myCourses = MyCourse::query()->with('course');
+
+        if($userId = $request->query('user_id')) {
+            $myCourses->where('user_id', $userId);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $myCourses->get()
+        ]);
+    }
+
     public function create(Request $request) {
         $rules = [
             'course_id' => 'required|integer',
