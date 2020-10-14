@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Course;
 use App\Mentor;
+use App\Review;
+use App\MyCourse;
+use App\Chapter;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
@@ -31,6 +34,47 @@ class CourseController extends Controller
             'status' => 'success',
             'data' => $course->paginate(5)
         ]);
+    }
+
+    public function show($id) {
+        $course = Course::with(['chapters.lessons', 'mentor', 'images'])->find($id);
+        if (!$course) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'course not found',
+            ], 404);
+        }
+        
+        $reviews = Review::where('course_id', $id)->get()->toArray();
+        if (count($reviews) > 0) {
+            $userIds = array_column($reviews, 'user_id');
+            $users = getUserByIds($userIds);
+            // echo "<pre>". print_r($users) . "</pre>";
+            if ($users['status'] == 'error') {
+                $reviews = [];
+            } else {
+                foreach ($reviews as $key => $review) {
+                    $userIndex = array_search($review['user_id'], array_column($users['data'], 'id'));
+                    // $userIndex = array_column($users['data'], 'id');
+                    $reviews[$key]['users'] = $users['data'][$userIndex];
+                }
+            }
+        }
+
+        $totalStudent= MyCourse::where('course_id', $id)->count();
+        $totalVideos = Chapter::where('course_id', $id)->withCount('lessons')->get()->toArray();
+        // print_r($totalVideos);
+        $finalTotalVideos = array_sum(array_column($totalVideos, 'lessons_count'));
+
+        $course['reviews'] = $reviews;
+        $course['total_student'] = $totalStudent;
+        $course['total_videos'] = $finalTotalVideos;
+
+
+        return response()->json([
+            'status'=> 'success',
+            'data'=> $course
+        ], 200);
     }
 
     public function create(Request $request) {
