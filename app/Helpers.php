@@ -9,7 +9,6 @@ function getUser($userId) {
         $response = Http::timeout(10)->get($url);
         $data = $response->json();
         $data['http_code'] = $response->getStatusCode();
-        
         return $data;
     } catch (\Throwable $th) {
         return response()->json([
@@ -37,10 +36,27 @@ function getUserByIds($userIds = []) {
         $data['http_code'] = $response->getStatusCode();
         return $data;
     } catch (\Throwable $th) {
-        return response()->json([
+        return [
             'status' => 'error',
             'http_code' => 500,
             'message' => 'service user unavailable'
-        ]);
+        ];
     };
+}
+
+function postOrder($params) {
+    $url = env('URL_ORDER_SERVICE') . 'api/orders';
+    try {
+        $response = Http::post($url, $params);
+        $data = $response->json();
+        $data['http_code'] = $response->getStatusCode();
+        // dd($data);
+        return $data;
+    } catch (\Throwable $th) {
+        return [
+            'status' => 'error',
+            'http_code' => 500,
+            'message' => 'service order unavailable'
+        ];
+    }
 }
