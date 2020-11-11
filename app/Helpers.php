@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Http;
 
 function getUser($userId) {
-    $url = env('USER_SERVICE_URL'). 'users/'. $userId;
+    $url = env('URL_USER_SERVICE'). 'users/'. $userId;
     
     try {
         $response = Http::timeout(10)->get($url);
@@ -20,7 +20,7 @@ function getUser($userId) {
 }
 
 function getUserByIds($userIds = []) {
-    $url = env('USER_SERVICE_URL'). 'users/';
+    $url = env('URL_USER_SERVICE'). 'users/';
     
     try {
         if (count($userIds) === 0) {
@@ -50,7 +50,6 @@ function postOrder($params) {
         $response = Http::post($url, $params);
         $data = $response->json();
         $data['http_code'] = $response->getStatusCode();
-        // dd($data);
         return $data;
     } catch (\Throwable $th) {
         return [
